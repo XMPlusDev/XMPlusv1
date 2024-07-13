@@ -11,7 +11,7 @@ require (
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/r3labs/diff/v2 v2.15.1
 	github.com/sagernet/sing v0.4.1
-	github.com/sagernet/sing-shadowsocks v0.2.6
+	github.com/sagernet/sing-shadowsocks v0.2.7
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.9.0
 	github.com/xmplusdev/xmcore v1.8.16
