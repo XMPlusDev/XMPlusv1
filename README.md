@@ -54,12 +54,7 @@ Nodes:
           Path: # HTTP PATH, Empty for any
           Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
           ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
-      RealityPrivateKey: ""   # Reality Private Key       
-      EnableFragment: false 
-      FragmentConfigs:
-        Packets: "tlshello" # TLS Hello Fragmentation (into multiple handshake messages)
-        Length: "100-200"   # minLength to maxLength
-        Interval: "10-20"   # minInterval to maxInterval   
+
 ```
 
 ## XMPlus Panel Server configuration
