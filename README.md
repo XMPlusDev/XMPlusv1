@@ -1,5 +1,5 @@
 # XMPlus
-XMPlus v2.0 backend
+XMPlus v1.0 backend
 
 
 #### Config directory
