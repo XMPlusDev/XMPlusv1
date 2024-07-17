@@ -331,8 +331,7 @@ func (c *APIClient) ReportNodeOnlineIPs(onlineIP *[]api.OnlineIP) error {
 
 func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 	var (
-		TLSType  = "none"
-		path, host, quic_security, quic_key, serviceName, seed, Dest, PrivateKey, MinClientVer, MaxClientVer string
+		path, host, quic_security, quic_key, serviceName, seed, Dest, PrivateKey, MinClientVer, MaxClientVer, Authority, Flow string
 		header  json.RawMessage
 		headers map[string]string
 		congestion ,RejectUnknownSni, AllowInsecure, Show  bool
@@ -341,22 +340,15 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		ServerNames,  ShortIds  []string
 	)
 	
-	NodeType := s.Type
-	
-	Flow := ""
-		
 	if s.NetworkSettings.Flow == "xtls-rprx-vision" || s.NetworkSettings.Flow == "xtls-rprx-vision-udp443"{
 		Flow = s.NetworkSettings.Flow
 	}
 	
-	Authority := ""
 	if s.NetworkSettings.Authority != "" {
 		Authority = s.NetworkSettings.Authority
 	}
 	
-	TLSType = s.Security
-	
-	if TLSType == "tls" {
+	if s.Security == "tls" {
 		RejectUnknownSni = s.SecuritySettings.RejectUnknownSni
         AllowInsecure = s.SecuritySettings.AllowInsecure
 
@@ -365,7 +357,7 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		}
 	}
 	
-	if TLSType == "reality" {
+	if s.Security == "reality" {
 		Dest = s.SecuritySettings.Dest
 		Show = s.SecuritySettings.Show
 		PrivateKey = s.SecuritySettings.PrivateKey
@@ -480,7 +472,8 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 			}	
 	}
 	
-	if NodeType == "Shadowsocks"  && (transportProtocol == "ws" || transportProtocol == "grpc" || transportProtocol == "quic") {
+	NodeType := s.Type
+	if NodeType == "Shadowsocks"  && transportProtocol != "tcp" {
 		NodeType = "Shadowsocks-Plugin"
 	}
 	
@@ -489,7 +482,7 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		NodeID:            c.NodeID,
 		Port:              uint32(s.Port),
 		Transport:         transportProtocol,
-		TLSType:           TLSType,
+		TLSType:           s.Security,
 		Path:              path,
 		Host:              host,
 		ServiceName:       serviceName,
@@ -536,30 +529,22 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 	s := c.resp.Load().(*serverConfig)
 	
 	var (
-		TLSType  = "none"
-		path, host, quic_security, quic_key, serviceName, seed, PublicKey , ShortId ,SpiderX, ServerName string
+		path, host, quic_security, quic_key, serviceName, seed, PublicKey , ShortId ,SpiderX, ServerName, Flow, Authority  string
 		header   json.RawMessage
 		headers map[string]string
 		congestion, Show   bool
 		MaxUploadSize, MaxConcurrentUploads int32 = 1000000, 10
 	)
-	
-	NodeType := s.RType
-		
-	Flow := ""
-	
+
 	if s.RNetworkSettings.Flow == "xtls-rprx-vision" || s.RNetworkSettings.Flow == "xtls-rprx-vision-udp443"{
 		Flow = s.RNetworkSettings.Flow
 	}
 	
-	Authority := ""
 	if s.RNetworkSettings.Authority != "" {
 		Authority = s.RNetworkSettings.Authority
 	}
 	
-	TLSType = s.RSecurity
-
-	if TLSType == "reality" {
+	if s.RSecurity == "reality" {
 		PublicKey = s.RSecuritySettings.PublicKey
 		Show = s.RSecuritySettings.Show
 		ShortId = s.RSecuritySettings.ShortId
@@ -670,7 +655,8 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 		}		
 	}
 	
-	if NodeType == "Shadowsocks"  && (transportProtocol == "ws" || transportProtocol == "grpc" || transportProtocol == "quic") {
+	NodeType := s.RType
+	if NodeType == "Shadowsocks"  && transportProtocol != "tcp" {
 		NodeType = "Shadowsocks-Plugin"
 	}
 	
@@ -680,7 +666,7 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 		NodeID:            s.RServerid,
 		Port:              uint32(s.RPort),
 		Transport:         transportProtocol,
-		TLSType:           TLSType,
+		TLSType:           s.RSecurity,
 		Path:              path,
 		Host:              host,
 		Flow:              Flow,

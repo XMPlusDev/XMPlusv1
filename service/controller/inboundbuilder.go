@@ -224,8 +224,8 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 			if nodeInfo.AllowInsecure {
 				tlsSettings.Insecure = nodeInfo.AllowInsecure
 			}
-			//tlsSettings.ServerName = nodeInfo.CertDomain
-			//tlsSettings.Fingerprint = nodeInfo.Fingerprint
+			tlsSettings.ServerName = nodeInfo.CertDomain
+			tlsSettings.Fingerprint = nodeInfo.Fingerprint
 			tlsSettings.Certs = append(tlsSettings.Certs, &conf.TLSCertConfig{CertFile: certFile, KeyFile: keyFile, OcspStapling: 3600})
 
 			streamSetting.TLSSettings = tlsSettings

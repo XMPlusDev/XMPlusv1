@@ -9,6 +9,7 @@ import (
 	"github.com/xmplusdev/xmcore/common/protocol/http"
 	"github.com/xmplusdev/xmcore/common/protocol/quic"
 	"github.com/xmplusdev/xmcore/common/protocol/tls"
+	"github.com/xmplusdev/xmcore/common/errors"
 )
 
 type SniffResult interface {
@@ -52,7 +53,7 @@ func NewSniffer(ctx context.Context) *Sniffer {
 	return ret
 }
 
-var errUnknownContent = newError("unknown content")
+var errUnknownContent = errors.New("unknown content")
 
 func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) (SniffResult, error) {
 	var pendingSniffer []protocolSnifferWithMetadata

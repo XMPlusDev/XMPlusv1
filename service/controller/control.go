@@ -11,6 +11,7 @@ import (
 	"github.com/xmplusdev/xmcore/features/stats"
 	"github.com/xmplusdev/xmcore/proxy"
 	"github.com/XMPlusDev/XMPlusv1/api"
+	"github.com/XMPlusDev/XMPlusv1/utility/limiter"
 )
 
 func (c *Controller) removeInbound(tag string) error {
@@ -130,8 +131,8 @@ func (c *Controller) resetTraffic(upCounterList *[]stats.Counter, downCounterLis
 	}
 }
 
-func (c *Controller) AddInboundLimiter(tag string, nodeSpeedLimit uint64, userList *[]api.UserInfo) error {
-	err := c.dispatcher.Limiter.AddInboundLimiter(tag, nodeSpeedLimit, userList)
+func (c *Controller) AddInboundLimiter(tag string, nodeSpeedLimit uint64, userList *[]api.UserInfo, globalIPLimit *limiter.IPLimit) error {
+	err := c.dispatcher.Limiter.AddInboundLimiter(tag, nodeSpeedLimit, userList, globalIPLimit )
 	return err
 }
 

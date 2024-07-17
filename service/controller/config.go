@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/XMPlusDev/XMPlusv1/utility/mylego"
+	"github.com/XMPlusDev/XMPlusv1/utility/limiter"
 )
 
 type Config struct {
@@ -10,6 +11,7 @@ type Config struct {
 	FallBackConfigs         []*FallBackConfig                `mapstructure:"FallBackConfigs"`
 	EnableDNS               bool                             `mapstructure:"EnableDNS"`
 	DNSStrategy             string                           `mapstructure:"DNSStrategy"`
+	IPLimit                 *limiter.IPLimit                 `mapstructure:"IPLimit"`
 }
 
 type FallBackConfig struct {

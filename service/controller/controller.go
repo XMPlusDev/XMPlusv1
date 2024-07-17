@@ -119,7 +119,7 @@ func (c *Controller) Start() error {
 	}
 
 	// Add Limiter
-	if err := c.AddInboundLimiter(c.Tag, newNodeInfo.SpeedLimit, userInfo); err != nil {
+	if err := c.AddInboundLimiter(c.Tag, newNodeInfo.SpeedLimit, userInfo, c.config.IPLimit); err != nil {
 		log.Print(err)
 	}
 
@@ -321,7 +321,7 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 		}
 
 		// Add Limiter
-		if err := c.AddInboundLimiter(c.Tag, newNodeInfo.SpeedLimit, newUserInfo); err != nil {
+		if err := c.AddInboundLimiter(c.Tag, newNodeInfo.SpeedLimit, newUserInfo, c.config.IPLimit); err != nil {
 			log.Print(err)
 			return nil
 		}	
@@ -379,7 +379,7 @@ func (c *Controller) addNewRelayTag(newRelayNodeInfo *api.RelayNodeInfo, userInf
 			if C.Contains(shadowaead_2022.List, strings.ToLower(newRelayNodeInfo.CypherMethod)) {
 				userKey, err := c.checkShadowsocksPassword(user.Passwd, newRelayNodeInfo.CypherMethod)
 				if err != nil {
-					newError(fmt.Errorf("[UID: %d] %s", user.UUID, err)).AtError().WriteToLog()
+					newError(fmt.Errorf("[UID: %d] %s", user.UUID, err)).AtError()
 					continue
 				}
 				Key = fmt.Sprintf("%s:%s", newRelayNodeInfo.ServerKey, userKey)

@@ -54,6 +54,15 @@ Nodes:
           Path: # HTTP PATH, Empty for any
           Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
           ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
+      IPLimit:
+        Enable: false # Enable the global ip limit of a user 
+        RedisNetwork: tcp # Redis protocol, tcp or unix
+        RedisAddr: 127.0.0.1:6379 # Redis server address, or unix socket path
+        RedisUsername: default # Redis username
+        RedisPassword: YOURPASSWORD # Redis password
+        RedisDB: 0 # Redis DB
+        Timeout: 5 # Timeout for redis request
+        Expiry: 60 # Expiry time (second) 
 ```
 
 ## XMPlus Panel Server configuration

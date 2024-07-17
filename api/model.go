@@ -90,7 +90,6 @@ type RelayNodeInfo struct {
 	Header            json.RawMessage
 	Flow              string
 	Seed              string
-	Alpn              string
 	Congestion        bool
 	Fingerprint       string
 	PublicKey         string
