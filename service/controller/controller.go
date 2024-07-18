@@ -201,11 +201,10 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 	}	
 
 	// Update User
-	
 	var userChanged = true
 	newUserInfo, err := c.apiClient.GetUserList()
 	if err != nil {
-		if err.Error() == api.ServiceNotModified  {
+		if err.Error() == api.UserNotModified  {
 			userChanged = false
 			newUserInfo = c.userList
 		} else {

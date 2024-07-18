@@ -201,7 +201,7 @@ func (c *APIClient) GetUserList() (UserList *[]api.UserInfo, err error) {
 		Get(path)
 	
 	if res.StatusCode() == 304 {
-		return nil, errors.New(api.ServiceNotModified)
+		return nil, errors.New(api.UserNotModified)
 	}
 	// update etag
 	if res.Header().Get("Etag") != "" && res.Header().Get("Etag") != c.eTags["services"] {

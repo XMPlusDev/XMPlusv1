@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	ServiceNotModified = "services not modified"
+	UserNotModified = "users not modified"
 	NodeNotModified = "node not modified"
 	RuleNotModified = "rules not modified"
 )
