@@ -23,7 +23,7 @@ var (
 )
 
 var (
-	version  = "v2.1.6 - XMPlus v1"
+	version  = "v2.1.7 - XMPlus v1"
 )
 
 func showVersion() {

@@ -106,6 +106,11 @@ type route struct {
 	Regex    string   `json:"regex"`
 }
 
+// Response is the common response
+type UserResponse struct {
+	Data json.RawMessage `json:"users"`
+}
+
 type User struct {
 	Id         int    `json:"id"`
 	Uuid       string `json:"uuid"`

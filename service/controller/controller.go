@@ -203,36 +203,23 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 	// Update User
 	
 	var userChanged = true
-	
 	newUserInfo, err := c.apiClient.GetUserList()
-	
 	if err != nil {
-		if nodeInfoChanged {
-			if err.Error() == api.ServiceNotModified {
-				userChanged = true
-			} else {
-				log.Print(err)
-				return nil
-			}
-		}else{
-			if err.Error() == api.ServiceNotModified  {
-				userChanged = false
-				newUserInfo = c.userList
-			} else {
-				log.Print(err)
-				return nil
-			}
+		if err.Error() == api.ServiceNotModified  {
+			userChanged = false
+			newUserInfo = c.userList
+		} else {
+			log.Print(err)
+			return nil
 		}
-		
 	}
 	
 	var updateRelay = false	
-	
 	if userChanged ||  nodeInfoChanged {
 		updateRelay = true
 	}
 	
-	if updateRelay {
+	if c.Relay && updateRelay {
 		c.removeRules(c.Tag, c.userList)
 	}
 	
@@ -338,7 +325,7 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 				if err != nil {
 					log.Print(err)
 				}
-				log.Printf("%s %d User(s) deleted", c.logPrefix(), len(deleted))
+				//log.Printf("%s %d User(s) deleted", c.logPrefix(), len(deleted))
 			}
 			if len(added) > 0 {
 				err = c.addNewUser(&added, c.nodeInfo)
@@ -510,7 +497,7 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 	if err != nil {
 		return err
 	}
-	log.Printf("%s %d New User(s) Added", c.logPrefix(), len(*userInfo))
+	//log.Printf("%s %d New User(s) Added", c.logPrefix(), len(*userInfo))
 	return nil
 }
 

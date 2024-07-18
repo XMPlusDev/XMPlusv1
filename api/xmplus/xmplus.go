@@ -129,6 +129,21 @@ func (c *APIClient) parseResponse(res *resty.Response, path string, err error) (
 	return rtn, nil
 }
 
+func (c *APIClient) parseUserResponse(res *resty.Response, path string, err error) (*UserResponse, error) {
+	if err != nil {
+		return nil, fmt.Errorf("request %s failed: %s", c.assembleURL(path), err)
+	}
+
+	if res.StatusCode() > 400 {
+		body := res.Body()
+		return nil, fmt.Errorf("request %s failed: %s, %v", c.assembleURL(path), string(body), err)
+	}
+	
+	response := res.Result().(*UserResponse)
+
+	return response, nil
+}
+
 func (c *APIClient) GetNodeInfo() (nodeInfo *api.NodeInfo, err error) {
 	server := new(serverConfig)
 	path := fmt.Sprintf("/api/v2/query/server/%d", c.NodeID)
@@ -180,6 +195,7 @@ func (c *APIClient) GetNodeInfo() (nodeInfo *api.NodeInfo, err error) {
 func (c *APIClient) GetUserList() (UserList *[]api.UserInfo, err error) {
 	path := fmt.Sprintf("/api/v2/query/users/%d", c.NodeID)
 	res, err := c.client.R().
+	    SetResult(&UserResponse{}).
 		SetHeader("If-None-Match", c.eTags["services"]).
 		ForceContentType("application/json").
 		Get(path)
@@ -192,26 +208,23 @@ func (c *APIClient) GetUserList() (UserList *[]api.UserInfo, err error) {
 		c.eTags["services"] = res.Header().Get("Etag")
 	}
 
-	response, err := c.parseResponse(res, path, err)
+	response, err := c.parseUserResponse(res, path, err)
 	if err != nil {
 		return nil, err
 	}
 	
 	users := new([]User)
 	
-	b, _ := response.Get("users").Encode()
-	json.Unmarshal(b, users)
-	
-	if err := json.Unmarshal(b, users); err != nil {
-		return nil, fmt.Errorf("Unmarshal %s failed: %s", reflect.TypeOf(users), err)
+	if err := json.Unmarshal(response.Data, users); err != nil {
+		return nil, fmt.Errorf("unmarshal %s failed: %s", reflect.TypeOf(users), err)
 	}
 	
 	userList, err := c.ParseUserListResponse(users)
 	if err != nil {
 		res, _ := json.Marshal(users)
-		return nil, fmt.Errorf("Parse user list failed: %s", string(res))
+		return nil, fmt.Errorf("parse service list failed: %s", string(res))
 	}
-
+	
 	return userList, nil
 }
 
