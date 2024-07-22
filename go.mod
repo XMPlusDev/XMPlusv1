@@ -19,7 +19,7 @@ require (
 	github.com/sagernet/sing-shadowsocks v0.2.7
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/xmplusdev/xmcore v1.8.21
+	github.com/xmplusdev/xmcore v1.8.22
 	golang.org/x/crypto v0.25.0
 	golang.org/x/net v0.27.0
 	golang.org/x/time v0.5.0
