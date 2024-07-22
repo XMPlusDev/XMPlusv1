@@ -147,7 +147,7 @@ func (*DefaultDispatcher) Close() error {
 	return nil
 }
 
-func (d *DefaultDispatcher) getLink(ctx context.Context, network net.Network) (*transport.Link, *transport.Link) {
+func (d *DefaultDispatcher) getLink(ctx context.Context, network net.Network) (*transport.Link, *transport.Link, error) {
 	opt := pipe.OptionsFromContext(ctx)
 	uplinkReader, uplinkWriter := pipe.New(opt...)
 	downlinkReader, downlinkWriter := pipe.New(opt...)
@@ -177,7 +177,7 @@ func (d *DefaultDispatcher) getLink(ctx context.Context, network net.Network) (*
 			common.Close(inboundLink.Writer)
 			common.Interrupt(outboundLink.Reader)
 			common.Interrupt(inboundLink.Reader)
-			return nil, nil
+			return nil, nil, errors.New("User ", user.Email, " has exceeded allowed IP(s) limit")
 		}
 		if ok {
 			inboundLink.Writer = d.Limiter.RateWriter(inboundLink.Writer, bucket)
@@ -205,7 +205,7 @@ func (d *DefaultDispatcher) getLink(ctx context.Context, network net.Network) (*
 		}
 	}
 
-	return inboundLink, outboundLink
+	return inboundLink, outboundLink, nil
 }
 
 func (d *DefaultDispatcher) shouldOverride(ctx context.Context, result SniffResult, request session.SniffingRequest, destination net.Destination) bool {
@@ -258,7 +258,10 @@ func (d *DefaultDispatcher) Dispatch(ctx context.Context, destination net.Destin
 	}
 
 	sniffingRequest := content.SniffingRequest
-	inbound, outbound := d.getLink(ctx, destination.Network)
+	inbound, outbound, err := d.getLink(ctx, destination.Network)
+	if err != nil {
+		return nil, err
+	}
 	if !sniffingRequest.Enabled {
 		go d.routedDispatch(ctx, outbound, destination)
 	} else {
@@ -404,7 +407,7 @@ func (d *DefaultDispatcher) routedDispatch(ctx context.Context, link *transport.
 	// Whether the inbound connection contains a user
 	if sessionInbound.User != nil {
 		if d.RuleManager.Detect(sessionInbound.Tag, destination.String(), sessionInbound.User.Email) {
-			errors.LogInfo(ctx, "User ", sessionInbound.User.Email, " access ", destination.String()," reject by rule")
+			errors.LogInfo(ctx, "User ", sessionInbound.User.Email, " access ", destination.String(), " reject by rule")
 			errors.New("destination is reject by rule")
 			common.Close(link.Writer)
 			common.Interrupt(link.Reader)
