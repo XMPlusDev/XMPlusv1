@@ -20,8 +20,8 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/xmplusdev/xmcore v1.8.22
-	golang.org/x/crypto v0.25.0
-	golang.org/x/net v0.27.0
+	golang.org/x/crypto v0.26.0
+	golang.org/x/net v0.28.0
 	golang.org/x/time v0.5.0
 	google.golang.org/protobuf v1.34.2
 	lukechampine.com/blake3 v1.3.0 // indirect
@@ -216,7 +216,7 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.27 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
-	github.com/seiflotfy/cuckoofilter v0.0.0-20240715131351-a2f2c23f1771
+	github.com/seiflotfy/cuckoofilter v0.0.0-20240715131351-a2f2c23f1771 // indirect
 	github.com/selectel/domains-go v1.1.0 // indirect
 	github.com/selectel/go-selvpcclient/v3 v3.1.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
@@ -249,9 +249,9 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/vultr/govultr/v2 v2.17.2 // indirect
-	github.com/xtls/reality v0.0.0-20240712055506-48f0b2d5ed6d
-	github.com/yandex-cloud/go-genproto v0.0.0-20240318083951-4fe6125f286e
-	github.com/yandex-cloud/go-sdk v0.0.0-20240318084659-dfa50323a0b4
+	github.com/xtls/reality v0.0.0-20240712055506-48f0b2d5ed6d // indirect
+	github.com/yandex-cloud/go-genproto v0.0.0-20240318083951-4fe6125f286e // indirect
+	github.com/yandex-cloud/go-sdk v0.0.0-20240318084659-dfa50323a0b4 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
@@ -267,9 +267,9 @@ require (
 	golang.org/x/exp v0.0.0-20240531132922-fd00a4e0eefc // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20231211153847-12269c276173 // indirect
