@@ -346,10 +346,9 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 	var (
 		path, host, quic_security, quic_key, serviceName, seed, Dest, PrivateKey, MinClientVer, MaxClientVer, Authority, Flow string
 		header  json.RawMessage
-		headers map[string]string
-		congestion ,RejectUnknownSni, AllowInsecure, Show  bool
+		congestion ,RejectUnknownSni, AllowInsecure, Show, noSSEHeader  bool
 		MaxTimeDiff,ProxyProtocol  uint64 = 0, 0	
-		MaxUploadSize, MaxConcurrentUploads int32 = 1000000, 10
+		scMaxEachPostBytes, scMaxConcurrentPosts, scMinPostsIntervalMs int32 = 1000000, 10, 30
 		ServerNames,  ShortIds  []string
 	)
 	
@@ -388,44 +387,19 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		case "ws":
 			path = s.NetworkSettings.Path
 			host = s.NetworkSettings.Host
-			headers = make(map[string]string)
-			if httpHeader, err := s.NetworkSettings.Headers.MarshalJSON(); err != nil {
-					return nil, err
-			} else {
-				err := json.Unmarshal(httpHeader, &headers)
-				if err == nil {
-					headers = headers
-				}
-			}
 		case "h2":
 			path = s.NetworkSettings.Path
 			host = s.NetworkSettings.Host
 		case "httpupgrade":
 			path = s.NetworkSettings.Path
 			host = s.NetworkSettings.Host
-			headers = make(map[string]string)
-			if httpHeader, err := s.NetworkSettings.Headers.MarshalJSON(); err != nil {
-					return nil, err
-			} else {
-				err := json.Unmarshal(httpHeader, &headers)
-				if err == nil {
-					headers = headers
-				}
-			}
 		case "splithttp":
 			path = s.NetworkSettings.Path
 			host = s.NetworkSettings.Host
-			MaxUploadSize = int32(s.NetworkSettings.MaxUploadSize)
-			MaxConcurrentUploads = int32(s.NetworkSettings.MaxConcurrentUploads)
-			headers = make(map[string]string)
-			if httpHeader, err := s.NetworkSettings.Headers.MarshalJSON(); err != nil {
-					return nil, err
-			} else {
-				err := json.Unmarshal(httpHeader, &headers)
-				if err == nil {
-					headers = headers
-				}
-			}
+			scMaxEachPostBytes = int32(s.NetworkSettings.scMaxEachPostBytes)
+			scMaxConcurrentPosts = int32(s.NetworkSettings.scMaxConcurrentPosts)
+			scMinPostsIntervalMs = int32(s.NetworkSettings.scMinPostsIntervalMs)
+			noSSEHeader = s.NetworkSettings.noSSEHeader
 		case "grpc":
 			serviceName = s.NetworkSettings.ServiceName
 		case "tcp":
@@ -530,9 +504,10 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		Xver:              ProxyProtocol,
 		Relay:             s.Relay,
 		RelayNodeID:       s.Relayid,
-		MaxConcurrentUploads: MaxConcurrentUploads, 
-		MaxUploadSize:     MaxUploadSize,
-		Headers:           headers,
+		ScMaxEachPostBytes: scMaxEachPostBytes, 
+		ScMaxConcurrentPosts: scMaxConcurrentPosts,
+		ScMinPostsIntervalMs: scMinPostsIntervalMs,
+		NoSSEHeader:      noSSEHeader,
 	}
 	return nodeInfo, nil
 }
@@ -544,9 +519,8 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 	var (
 		path, host, quic_security, quic_key, serviceName, seed, PublicKey , ShortId ,SpiderX, ServerName, Flow, Authority  string
 		header   json.RawMessage
-		headers map[string]string
-		congestion, Show   bool
-		MaxUploadSize, MaxConcurrentUploads int32 = 1000000, 10
+		congestion, Show, noSSEHeader  bool
+		scMaxEachPostBytes, scMaxConcurrentPosts, scMinPostsIntervalMs int32 = 1000000, 10, 30
 	)
 
 	if s.RNetworkSettings.Flow == "xtls-rprx-vision" || s.RNetworkSettings.Flow == "xtls-rprx-vision-udp443"{
@@ -571,44 +545,19 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 	case "ws":
 		path = s.RNetworkSettings.Path
 		host = s.RNetworkSettings.Host
-		headers = make(map[string]string)
-		if httpHeader, err := s.RNetworkSettings.Headers.MarshalJSON(); err != nil {
-			return nil, err
-		} else {
-			err := json.Unmarshal(httpHeader, &headers)
-			if err != nil {
-				return nil, fmt.Errorf("Unmarshal headers error: %v", err)
-			}
-		}
 	case "h2":
 		path = s.RNetworkSettings.Path
 		host = s.RNetworkSettings.Host
 	case "httpupgrade":
 		path = s.RNetworkSettings.Path
 		host = s.RNetworkSettings.Host
-		headers = make(map[string]string)
-		if httpHeader, err := s.RNetworkSettings.Headers.MarshalJSON(); err != nil {
-			return nil, err
-		} else {
-			err := json.Unmarshal(httpHeader, &headers)
-			if err != nil {
-				return nil, fmt.Errorf("Unmarshal headers error: %v", err)
-			}
-		}
 	case "splithttp":
 		path = s.RNetworkSettings.Path
 		host = s.RNetworkSettings.Host
-		MaxUploadSize = int32(s.RNetworkSettings.MaxUploadSize)
-		MaxConcurrentUploads = int32(s.RNetworkSettings.MaxConcurrentUploads)	
-		headers = make(map[string]string)
-		if httpHeader, err := s.RNetworkSettings.Headers.MarshalJSON(); err != nil {
-			return nil, err
-		} else {
-			err := json.Unmarshal(httpHeader, &headers)
-			if err != nil {
-				return nil, fmt.Errorf("Unmarshal headers error: %v", err)
-			}
-		}
+		scMaxEachPostBytes = int32(s.RNetworkSettings.scMaxEachPostBytes)
+		scMaxConcurrentPosts = int32(s.RNetworkSettings.scMaxConcurrentPosts)
+		scMinPostsIntervalMs = int32(s.RNetworkSettings.scMinPostsIntervalMs)
+		noSSEHeader = s.RNetworkSettings.noSSEHeader
 	case "grpc":
 		serviceName = s.RNetworkSettings.ServiceName
 	case "tcp":
@@ -702,9 +651,10 @@ func (c *APIClient) GetRelayNodeInfo() (*api.RelayNodeInfo, error) {
 		SpiderX:           SpiderX,
 		Show:              Show,
 		ServerName:        ServerName,
-		MaxConcurrentUploads: MaxConcurrentUploads, 
-		MaxUploadSize:     MaxUploadSize,
-		Headers:           headers,
+		ScMaxEachPostBytes: scMaxEachPostBytes, 
+		ScMaxConcurrentPosts: scMaxConcurrentPosts,
+		ScMinPostsIntervalMs: scMinPostsIntervalMs,
+		NoSSEHeader:      noSSEHeader,
 	}
 	return nodeInfo, nil
 }

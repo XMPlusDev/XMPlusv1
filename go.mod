@@ -1,6 +1,6 @@
 module github.com/XMPlusDev/XMPlusv1
 
-go 1.22.0
+go 1.22.6
 
 require (
 	dario.cat/mergo v1.0.0
@@ -19,7 +19,7 @@ require (
 	github.com/sagernet/sing-shadowsocks v0.2.7
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/xmplusdev/xmcore v1.8.22
+	github.com/xmplusdev/xmcore v1.8.23
 	golang.org/x/crypto v0.25.0
 	golang.org/x/net v0.27.0
 	golang.org/x/time v0.5.0

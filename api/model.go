@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"regexp"
-	
-	"github.com/xmplusdev/xmcore/infra/conf"
 )
 
 const (
@@ -62,11 +60,10 @@ type NodeInfo struct {
 	Xver              uint64
 	Relay             bool
 	RelayNodeID       int
-	MaxConcurrentUploads int32
-	MaxUploadSize    int32
-	Headers           map[string]string
-	Method           string
-	HttpHeaders      map[string]*conf.StringList
+	ScMaxEachPostBytes  int32
+	ScMaxConcurrentPosts  int32
+	ScMinPostsIntervalMs  int32
+	NoSSEHeader       bool
 }
 
 type RelayNodeInfo struct {
@@ -97,11 +94,10 @@ type RelayNodeInfo struct {
 	SpiderX           string 
 	Show              bool
 	ServerName        string
-	MaxConcurrentUploads int32
-	MaxUploadSize    int32
-	Headers           map[string]string
-	Method           string
-	HttpHeaders      map[string]*conf.StringList
+	ScMaxEachPostBytes  int32
+	ScMaxConcurrentPosts  int32
+	ScMinPostsIntervalMs  int32
+	NoSSEHeader       bool
 }
 
 type UserInfo struct {

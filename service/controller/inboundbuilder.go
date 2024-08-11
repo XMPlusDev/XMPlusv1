@@ -156,7 +156,6 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 			AcceptProxyProtocol: nodeInfo.ProxyProtocol,
 			Path: nodeInfo.Path,
 			Host: nodeInfo.Host,
-			Headers: nodeInfo.Headers,
 		}
 		streamSetting.WSSettings = wsSettings
 	case "http":
@@ -164,8 +163,6 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 		httpSettings := &conf.HTTPConfig{
 			Host:    &hosts,
 			Path:    nodeInfo.Path,
-			Method:  nodeInfo.Method,
-			Headers: nodeInfo.HttpHeaders,
 		}
 		streamSetting.HTTPSettings = httpSettings
 	case "httpupgrade":
@@ -173,16 +170,28 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 		    AcceptProxyProtocol: nodeInfo.ProxyProtocol,
 			Host: nodeInfo.Host,
 			Path: nodeInfo.Path,
-			Headers: nodeInfo.Headers,
 		}
 		streamSetting.HTTPUPGRADESettings = httpupgradeSettings	
 	case "splithttp":
+		scMaxEachPostBytes := conf.Int32Range{
+			From: nodeInfo.ScMaxEachPostBytes, 
+			To: nodeInfo.ScMaxEachPostBytes,
+		}
+		scMaxConcurrentPosts := conf.Int32Range{
+			From: nodeInfo.ScMaxConcurrentPosts, 
+			To: nodeInfo.ScMaxConcurrentPosts,
+		}
+		scMinPostsIntervalMs := conf.Int32Range{
+			From: nodeInfo.ScMinPostsIntervalMs, 
+			To: nodeInfo.ScMinPostsIntervalMs,
+		}
 		splithttpSettings := &conf.SplitHTTPConfig{
 			Host: nodeInfo.Host,
 			Path: nodeInfo.Path,
-			Headers: nodeInfo.Headers,
-			MaxConcurrentUploads: nodeInfo.MaxConcurrentUploads,
-			MaxUploadSize: nodeInfo.MaxUploadSize,
+			ScMaxEachPostBytes: scMaxEachPostBytes,
+			ScMaxConcurrentPosts: scMaxConcurrentPosts,
+			ScMinPostsIntervalMs: scMinPostsIntervalMs,
+			NoSSEHeader: nodeInfo.NoSSEHeader,
 		}
 		streamSetting.SplitHTTPSettings = splithttpSettings		
 	case "grpc":

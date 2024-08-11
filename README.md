@@ -1,5 +1,5 @@
 # XMPlus
-XMPlus v2.0 backend
+XMPlus v1.0 backend
 
 
 #### Config directory
@@ -102,10 +102,7 @@ Nodes:
   "transport": "ws",
   "acceptProxyProtocol": false,
   "path": "/xmplus?ed=2560",
-  "host": "hk1.xyz.com",
-  "headers": {
-    "host": "hk1.xyz.com"
-  }
+  "host": "hk1.xyz.com"
 }
 ```
 
@@ -135,10 +132,7 @@ Nodes:
   "transport" : "httpupgrade",
   "acceptProxyProtocol": false,
   "host": "hk1.xyz.com",
-  "path": "/xmplus?ed=2560",
-  "headers": {
-    "host": "hk1.xyz.com"
-  }
+  "path": "/xmplus?ed=2560"
 }
 ```
 
@@ -148,11 +142,10 @@ Nodes:
   "transport" : "splithttp",
   "host": "hk1.xyz.com",
   "path": "/",
-  "headers": {
-    "host": "hk1.xyz.com"
-  },
-  "maxUploadSize": 1000000,
-  "maxConcurrentUploads": 10 
+  "scMaxEachPostBytes": 1000000,
+  "scMaxConcurrentPosts": 100,
+  "scMinPostsIntervalMs": 30,
+  "noSSEHeader": false
 }
 ```
 
