@@ -40,7 +40,6 @@ type server struct {
 	} `json:"networkSettings"`
 	Security    string `json:"security"`
 	SecuritySettings  struct {
-	    AllowInsecure bool 	    `json:"allowInsecure"`
 		Fingerprint   string    `json:"fingerprint"`
 		RejectUnknownSni bool   `json:"rejectUnknownSni"`
 		ServerName    string    `json:"serverName"`

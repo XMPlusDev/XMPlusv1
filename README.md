@@ -102,7 +102,8 @@ Nodes:
   "transport": "ws",
   "acceptProxyProtocol": false,
   "path": "/xmplus?ed=2560",
-  "host": "hk1.xyz.com"
+  "host": "hk1.xyz.com",
+  "cdn_host": "fakedomain.com"
 }
 ```
 
@@ -112,7 +113,8 @@ Nodes:
   "transport" : "h2",
   "acceptProxyProtocol": false,
   "host": "hk1.xyz.com",
-  "path": "/"
+  "path": "/",
+  "cdn_host": "fakedomain.com"
 }
 ```
 
@@ -132,7 +134,8 @@ Nodes:
   "transport" : "httpupgrade",
   "acceptProxyProtocol": false,
   "host": "hk1.xyz.com",
-  "path": "/xmplus?ed=2560"
+  "path": "/xmplus?ed=2560",
+  "cdn_host": "fakedomain.com"
 }
 ```
 
@@ -141,6 +144,7 @@ Nodes:
 {
   "transport" : "splithttp",
   "host": "hk1.xyz.com",
+  "cdn_host": "fakedomain.com"
   "path": "/",
   "scMaxEachPostBytes": 1000000,
   "scMaxConcurrentPosts": 100,
@@ -181,15 +185,19 @@ Nodes:
 ```
 {
   "serverName": "xmplus.dev",
-  "rejectUnknownSni": true,
+  "rejectUnknownSni": false,
   "allowInsecure": false,
   "fingerprint": "chrome",
-  "sni" : "xmplus.dev"
+  "sni" : "xmplus.dev",
+  "alpn": [
+    "h2",
+    "http/1.1"
+  ]
 }
 ```
 #### REALITY
 
-[Generate Private and Public Keys Here](https://go.dev/play/p/N5kQhIjtye7)
+`Generate Private and Public Keys :   xmplus x25519`
 
 ```
 {

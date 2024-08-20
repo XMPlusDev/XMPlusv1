@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 ENV CGO_ENABLED=0
 RUN go mod download
-RUN go build -v -o XMPlus -trimpath -ldflags "-s -w -buildid=" ./main
+RUN go build -v -o XMPlus -trimpath -ldflags "-s -w -buildid="
 
 FROM  alpine
 RUN  apk --update --no-cache add tzdata ca-certificates \

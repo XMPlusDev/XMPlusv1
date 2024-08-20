@@ -1,9 +1,7 @@
-package main
+package cmd
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"path"
@@ -12,33 +10,40 @@ import (
 	"syscall"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
 	"github.com/XMPlusDev/XMPlusv1/manager"
 )
 
 var (
-	configFile   = flag.String("config", "", "Config file for XMPlus.")
-	printVersion = flag.Bool("version", false, "show version")
+	cfgFile string
+	rootCmd = &cobra.Command{
+		Use: "XMPlus",
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := run(); err != nil {
+				log.Fatal(err)
+			}
+		},
+	}
 )
 
-var (
-	version  = "v2.2.0 - XMPlus v1"
-)
-
-func showVersion() {
-	fmt.Printf("%s \n", version)
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file for XMPlus.")
 }
 
 func getConfig() *viper.Viper {
 	config := viper.New()
 
 	// Set custom path and name
-	if *configFile != "" {
-		configName := path.Base(*configFile)
-		configFileExt := path.Ext(*configFile)
+	if cfgFile != "" {
+		configName := path.Base(cfgFile)
+		configFileExt := path.Ext(cfgFile)
 		configNameOnly := strings.TrimSuffix(configName, configFileExt)
-		configPath := path.Dir(*configFile)
+		configPath := path.Dir(cfgFile)
 		config.SetConfigName(configNameOnly)
 		config.SetConfigType(strings.TrimPrefix(configFileExt, "."))
 		config.AddConfigPath(configPath)
@@ -50,6 +55,7 @@ func getConfig() *viper.Viper {
 		config.SetConfigName("config")
 		config.SetConfigType("yml")
 		config.AddConfigPath(".")
+
 	}
 
 	if err := config.ReadInConfig(); err != nil {
@@ -61,18 +67,19 @@ func getConfig() *viper.Viper {
 	return config
 }
 
-func main() {
-	flag.Parse()
+func run() error {
 	showVersion()
-	if *printVersion {
-		return
-	}
 
 	config := getConfig()
 	managerConfig := &manager.Config{}
 	if err := config.Unmarshal(managerConfig); err != nil {
-		log.Panicf("Parse config file %v failed: %s \n", configFile, err)
+		return fmt.Errorf("Parse config file %v failed: %s \n", cfgFile, err)
 	}
+
+	if managerConfig.LogConfig.Level == "debug" {
+		log.SetReportCaller(true)
+	}
+
 	m := manager.New(managerConfig)
 	lastTime := time.Now()
 	config.OnConfigChange(func(e fsnotify.Event) {
@@ -84,21 +91,31 @@ func main() {
 			// Delete old instance and trigger GC
 			runtime.GC()
 			if err := config.Unmarshal(managerConfig); err != nil {
-				log.Panicf("Parse config file %v failed: %s \n", configFile, err)
+				log.Panicf("Parse config file %v failed: %s \n", cfgFile, err)
 			}
+
+			if managerConfig.LogConfig.Level == "debug" {
+				log.SetReportCaller(true)
+			}
+
 			m.Start()
 			lastTime = time.Now()
 		}
 	})
+
 	m.Start()
 	defer m.Close()
 
 	// Explicitly triggering GC to remove garbage from config loading.
 	runtime.GC()
 	// Running backend
-	{
-		osSignals := make(chan os.Signal, 1)
-		signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
-		<-osSignals
-	}
+	osSignals := make(chan os.Signal, 1)
+	signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
+	<-osSignals
+
+	return nil
+}
+
+func Execute() error {
+	return rootCmd.Execute()
 }

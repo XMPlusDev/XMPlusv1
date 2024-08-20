@@ -346,7 +346,7 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 	var (
 		path, host, quic_security, quic_key, serviceName, seed, Dest, PrivateKey, MinClientVer, MaxClientVer, Authority, Flow string
 		header  json.RawMessage
-		congestion ,RejectUnknownSni, AllowInsecure, Show, noSSEHeader  bool
+		congestion ,RejectUnknownSni, Show, noSSEHeader  bool
 		MaxTimeDiff,ProxyProtocol  uint64 = 0, 0	
 		scMaxEachPostBytes, scMaxConcurrentPosts, scMinPostsIntervalMs int32 = 1000000, 10, 30
 		ServerNames,  ShortIds  []string
@@ -362,7 +362,6 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 	
 	if s.Security == "tls" {
 		RejectUnknownSni = s.SecuritySettings.RejectUnknownSni
-        AllowInsecure = s.SecuritySettings.AllowInsecure
 
 		if s.SecuritySettings.ServerName == "" {
 			return nil, fmt.Errorf("TLS certificate domain (ServerName) is empty: %s",  s.SecuritySettings.ServerName)
@@ -484,8 +483,7 @@ func (c *APIClient) parseNodeResponse(s *serverConfig) (*api.NodeInfo, error) {
 		Quic_security:     quic_security,
 		Quic_key:          quic_key,
 		CypherMethod:      s.Cipher,
-		Address:           s.Address, 
-		AllowInsecure:     AllowInsecure,
+		Address:           s.Address,
 		ListenIP:          s.Listenip, 
 		ProxyProtocol:     s.NetworkSettings.ProxyProtocol,
 		CertMode:          s.Certmode,

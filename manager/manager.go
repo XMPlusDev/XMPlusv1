@@ -18,7 +18,7 @@ import (
 
 	"github.com/XMPlusDev/XMPlusv1/api"
 	"github.com/XMPlusDev/XMPlusv1/api/xmplus"
-	_ "github.com/XMPlusDev/XMPlusv1/main/distro/all"
+	_ "github.com/XMPlusDev/XMPlusv1/cmd/distro/all"
 	"github.com/XMPlusDev/XMPlusv1/service"
 	"github.com/XMPlusDev/XMPlusv1/service/controller"
 )

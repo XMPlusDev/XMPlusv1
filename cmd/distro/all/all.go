@@ -38,6 +38,7 @@ import (
 	_ "github.com/xmplusdev/xmcore/proxy/vless/outbound"
 	_ "github.com/xmplusdev/xmcore/proxy/vmess/inbound"
 	_ "github.com/xmplusdev/xmcore/proxy/vmess/outbound"
+	_ "github.com/xmplusdev/xmcore/proxy/wireguard"
 
 	// Transports
 	_ "github.com/xmplusdev/xmcore/transport/internet/domainsocket"

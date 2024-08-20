@@ -20,6 +20,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/xmplusdev/xmcore v1.8.23
+	github.com/spf13/cobra v1.8.0
 	golang.org/x/crypto v0.25.0
 	golang.org/x/net v0.27.0
 	golang.org/x/time v0.5.0
@@ -140,6 +141,7 @@ require (
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/iij/doapi v0.0.0-20190504054126-0bbf12d6d7df // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/infobloxopen/infoblox-go-client v1.1.1 // indirect
 	github.com/iris-contrib/schema v0.0.6 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect

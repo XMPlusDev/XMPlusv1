@@ -36,7 +36,6 @@ type NodeInfo struct {
 	Quic_security     string
 	Quic_key          string
 	Address           string
-	AllowInsecure     bool
 	ListenIP          string
 	ProxyProtocol     bool
 	CertMode          string
