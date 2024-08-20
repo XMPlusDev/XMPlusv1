@@ -144,7 +144,7 @@ Nodes:
 {
   "transport" : "splithttp",
   "host": "hk1.xyz.com",
-  "cdn_host": "fakedomain.com"
+  "cdn_host": "fakedomain.com",
   "path": "/",
   "scMaxEachPostBytes": 1000000,
   "scMaxConcurrentPosts": 100,
