@@ -201,6 +201,8 @@ install_XMPlus() {
     echo "XMPlus install            - Install XMPlus"
     echo "XMPlus uninstall          - Uninstall XMPlus"
     echo "XMPlus version            - View XMPlus version"
+    echo "XMPlus warp               - Generate cloudflare warp account"
+    echo "XMPlus x25519             - enerate reality key pairs"
     echo "------------------------------------------"
 }
 

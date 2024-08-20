@@ -95,20 +95,112 @@ install() {
 }
 
 update() {
-    if [[ $# == 0 ]]; then
-        echo && echo -n -e "Enter the specified version (default latest version): " && read version
-    else
-        version=$2
-    fi
-    bash <(curl -Ls https://raw.githubusercontent.com/XMPlusDev/XMPlusv1/install/install.sh) $version
-    if [[ $? == 0 ]]; then
-        echo -e "${green}The update is complete and XMPlus has restarted automatically, please use XMPlus log to view the operation log${plain}"
-        exit
+    systemctl stop XMPlus
+    if [[ -e /usr/local/XMPlus/ ]]; then
+        rm /usr/local/XMPlus/ -rf
     fi
 
-    if [[ $# == 0 ]]; then
-        before_show_menu
+    mkdir /usr/local/XMPlus/ -p
+	cd /usr/local/XMPlus/
+
+    if  [ $# == 0 ] ;then
+        last_version=$(curl -Ls "https://api.github.com/repos/XMPlusDev/XMPlusv1/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        if [[ ! -n "$last_version" ]]; then
+            echo -e "${red}Failed to detect the XMPlus version, it may be because of Github API limit, please try again later, or manually specify the XMPlus version to install${plain}"
+            exit 1
+        fi
+        echo -e "XMPlus latest version detected：${last_version}，Start Installation"
+        wget -N --no-check-certificate -O /usr/local/XMPlus/XMPlus-linux.zip https://github.com/XMPlusDev/XMPlusv1/releases/download/${last_version}/XMPlus-linux-${arch}.zip
+        if [[ $? -ne 0 ]]; then
+            echo -e "${red}Downloading XMPlus failed，Please make sure your server can download github file${plain}"
+            exit 1
+        fi
+    else
+        last_version=$1
+        url="https://github.com/XMPlusDev/XMPlusv1/releases/download/${last_version}/XMPlus-linux-${arch}.zip"
+        echo -e "Start Installation XMPlus v$1"
+        wget -N --no-check-certificate -O /usr/local/XMPlus/XMPlus-linux.zip ${url}
+        if [[ $? -ne 0 ]]; then
+            echo -e "${red}Downloading XMPlus v$1 failed, make sure this version exists${plain}"
+            exit 1
+        fi
     fi
+
+    unzip XMPlus-linux.zip
+    rm XMPlus-linux.zip -f
+    chmod +x XMPlus
+    mkdir /etc/XMPlus/ -p
+    rm /etc/systemd/system/XMPlus.service -f
+    file="https://raw.githubusercontent.com/XMPlusDev/XMPlusv1/install/XMPlus.service"
+    wget -N --no-check-certificate -O /etc/systemd/system/XMPlus.service ${file}
+    #cp -f XMPlus.service /etc/systemd/system/
+    systemctl daemon-reload
+    systemctl enable XMPlus
+    echo -e "${green}XMPlus ${last_version}${plain} The installation is complete，XMPlus has restarted"
+    cp geoip.dat /etc/XMPlus/
+    cp geosite.dat /etc/XMPlus/ 
+	
+    if [[ ! -f /etc/XMPlus/dns.json ]]; then
+		cp dns.json /etc/XMPlus/
+	fi
+	if [[ ! -f /etc/XMPlus/route.json ]]; then 
+		cp route.json /etc/XMPlus/
+	fi
+	
+	if [[ ! -f /etc/XMPlus/outbound.json ]]; then
+		cp outbound.json /etc/XMPlus/
+	fi
+	
+	if [[ ! -f /etc/XMPlus/inbound.json ]]; then
+		cp inbound.json /etc/XMPlus/
+	fi
+
+	if [[ ! -f /etc/XMPlus/rulelist ]]; then
+		cp rulelist /etc/XMPlus/
+	fi
+	
+    if [[ ! -f /etc/XMPlus/config.yml ]]; then
+        cp config.yml /etc/XMPlus/
+    else
+        systemctl start XMPlus
+        sleep 2
+        check_status
+        echo -e ""
+        if [[ $? == 0 ]]; then
+            echo -e "${green}XMPlus restart successfully${plain}"
+        else
+            echo -e "${red} XMPlus May fail to start, please use [ XMPlus log ] View log information ${plain}"
+        fi
+    fi
+    
+    curl -o /usr/bin/XMPlus -Ls https://raw.githubusercontent.com/XMPlusDev/XMPlusv1/install/XMPlus.sh
+    chmod +x /usr/bin/XMPlus
+    ln -s /usr/bin/XMPlus /usr/bin/xmplus 
+    chmod +x /usr/bin/xmplus
+
+    echo -e ""
+    echo "XMPlus Management usage method: "
+    echo "------------------------------------------"
+    echo "XMPlus                    - Show menu (more features)"
+    echo "XMPlus start              - Start XMPlus"
+    echo "XMPlus stop               - Stop XMPlus"
+    echo "XMPlus restart            - Restart XMPlus"
+    echo "XMPlus status             - View XMPlus status"
+    echo "XMPlus enable             - Enable XMPlus auto-start"
+    echo "XMPlus disable            - Disable XMPlus auto-start"
+    echo "XMPlus log                - View XMPlus logs"
+    echo "XMPlus update             - Update XMPlus"
+    echo "XMPlus update vx.x.x      - Update XMPlus Specific version"
+    echo "XMPlus config             - Show configuration file content"
+    echo "XMPlus install            - Install XMPlus"
+    echo "XMPlus uninstall          - Uninstall XMPlus"
+    echo "XMPlus version            - View XMPlus version"
+    echo "XMPlus warp               - Generate cloudflare warp account"
+    echo "XMPlus x25519             - enerate reality key pairs"
+    echo "------------------------------------------"
+	
+    chmod +x /usr/bin/XMPlus
+    echo -e "${green} Upgrade was successful ${plain}" && exit 0
 }
 
 config() {
@@ -340,13 +432,32 @@ show_enable_status() {
 }
 
 show_XMPlus_version() {
-    echo -n "XMPlus Version："
-    /usr/local/XMPlus/XMPlus -version
+    echo -n ""
+    /usr/local/XMPlus/XMPlus version
     echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
     fi
 }
+
+show_XMPlus_warp() {
+    echo -n ""
+    /usr/local/XMPlus/XMPlus warp
+    echo ""
+    if [[ $# == 0 ]]; then
+        before_show_menu
+    fi
+}
+
+show_XMPlus_x25519() {
+     echo -n ""
+    /usr/local/XMPlus/XMPlus x25519
+    echo ""
+    if [[ $# == 0 ]]; then
+        before_show_menu
+    fi
+}
+
 
 show_usage() {
     echo "XMPlus management script: "
@@ -365,6 +476,8 @@ show_usage() {
     echo "XMPlus install            - Install XMPlus"
     echo "XMPlus uninstall          - Uninstall XMPlus"
     echo "XMPlus version            - View XMPlus version"
+    echo "XMPlus warp               - Generate cloudflare warp account"
+    echo "XMPlus x25519             - enerate reality key pairs"
     echo "------------------------------------------"
 }
 
@@ -391,6 +504,9 @@ show_menu() {
  ${green}11.${plain} One-click install bbr (latest kernel)
  ${green}12.${plain} View XMPlus version 
  ${green}13.${plain} Upgrade maintenance script
+————————————————
+ ${green}14.${plain} Generate cloudflare warp account info
+ ${green}15.${plain} Generate reality key pairs
  "
     show_status
     echo && read -p "Please enter selection [0-13]: " num
@@ -423,6 +539,10 @@ show_menu() {
         12) check_install && show_XMPlus_version
         ;;
         13) update_shell
+        ;;
+		14) check_install && show_XMPlus_warp
+        ;;
+		15) check_install && show_XMPlus_x25519
         ;;
         *) echo -e "${red}Please enter the correct number [0-12]${plain}"
         ;;
@@ -457,6 +577,10 @@ if [[ $# > 0 ]]; then
         "version") check_install 0 && show_XMPlus_version 0
         ;;
         "update_shell") update_shell
+        ;;
+		"warp") check_install 0 && show_XMPlus_warp 0
+        ;;
+		"x25519") check_install 0 && show_XMPlus_x25519 0
         ;;
         *) show_usage
     esac
