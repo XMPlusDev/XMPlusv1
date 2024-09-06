@@ -17,11 +17,11 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sagernet/sing v0.4.1
 	github.com/sagernet/sing-shadowsocks v0.2.7
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/xmplusdev/xmcore v1.8.23
-	github.com/spf13/cobra v1.8.0
-	golang.org/x/crypto v0.25.0
+	golang.org/x/crypto v0.27.0
 	golang.org/x/net v0.27.0
 	golang.org/x/time v0.5.0
 	google.golang.org/protobuf v1.34.2
@@ -218,11 +218,11 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.27 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
-	github.com/seiflotfy/cuckoofilter v0.0.0-20240715131351-a2f2c23f1771
+	github.com/seiflotfy/cuckoofilter v0.0.0-20240715131351-a2f2c23f1771 // indirect
 	github.com/selectel/domains-go v1.1.0 // indirect
 	github.com/selectel/go-selvpcclient/v3 v3.1.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
+	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/go-aws-auth v0.0.0-20180515143844-0c1422d1fdb9 // indirect
 	github.com/softlayer/softlayer-go v1.1.5 // indirect
 	github.com/softlayer/xmlrpc v0.0.0-20200409220501-5f089df7cb7e // indirect
@@ -251,9 +251,9 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/vultr/govultr/v2 v2.17.2 // indirect
-	github.com/xtls/reality v0.0.0-20240712055506-48f0b2d5ed6d
-	github.com/yandex-cloud/go-genproto v0.0.0-20240318083951-4fe6125f286e
-	github.com/yandex-cloud/go-sdk v0.0.0-20240318084659-dfa50323a0b4
+	github.com/xtls/reality v0.0.0-20240712055506-48f0b2d5ed6d // indirect
+	github.com/yandex-cloud/go-genproto v0.0.0-20240318083951-4fe6125f286e // indirect
+	github.com/yandex-cloud/go-sdk v0.0.0-20240318084659-dfa50323a0b4 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
@@ -269,9 +269,9 @@ require (
 	golang.org/x/exp v0.0.0-20240531132922-fd00a4e0eefc // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20231211153847-12269c276173 // indirect
